@@ -17,8 +17,7 @@
                     <b-button type="submit" variant="light" size="lg" class="px-5">Find</b-button>
                 </div> 
             </transition>            
-        </b-form>
-             
+        </b-form>  
     </b-container>
 
     
