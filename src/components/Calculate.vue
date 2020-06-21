@@ -1,5 +1,29 @@
 <template>
-  <div></div>
+  <div class="h-100">
+
+
+    <b-container class="text-center h-100">
+        
+        <b-form @submit.prevent="addUserInput" @reset="onReset" class="userInputForm">    
+            <transition name="slide-fade"> 
+                <div v-show="show">
+                   <h2 class="mb-3 label">Find nth of Fibonnaci number</h2>       
+                    <b-form-input
+                        id="input-2"
+                        v-model="number"
+                        required
+                        class="w-25 mx-auto mb-5 shadow"
+                    ></b-form-input>
+                    <b-button type="submit" variant="light" size="lg" class="px-5">Find</b-button>
+                </div> 
+            </transition>            
+        </b-form>
+             
+    </b-container>
+
+    
+
+  </div>
 </template>
 
 <script>
@@ -14,6 +38,21 @@
         }
     },
     methods: {
+        onSubmit() {
+          console.log(typeof this.number)
+        },
+        onReset(evt) {
+            evt.preventDefault()
+            // Reset form values
+            this.number
+        },
+         addUserInput () {
+             console.log(this.show)
+            let userInput = this.number
+            parseInt(userInput)
+            console.log(userInput)
+            this.$store.dispatch('getUserInput', userInput)
+        },
         vanillaJs: function fib(n) {
                 if (n < 2){
                 return n
@@ -22,9 +61,8 @@
         }
     },
     mounted (){
-        this.$store.dispatch('getUserInput', 20)
-        console.log(this.vanillaJs(19))
-
+        // console.log(this.vanillaJs(40))
+        this.show = true;
     }
   }
 </script>
@@ -36,13 +74,14 @@
     h2 {
         font-size: 4vw;
     }
-    .fade-enter-active, .fade-leave-active {
-        transition: opacity 1s;
-
-      
+    .slide-fade-enter-active {
+        transition: all 0.8s ease-in-out;
+        
     }
-    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    .slide-fade-enter{
+        transform: translateY(10px);
         opacity: 0;
+        
     }
    
 </style>

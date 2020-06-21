@@ -11,8 +11,9 @@ export const store = new Vuex.Store ({
     },
     mutations: {
         addResult: (state, {payload}) => {
-            state.result.push(payload);
-            return state.number = state.result.reduce((a, b) => a + b, 0)
+            // state.result.push(payload);
+            // return state.number = state.result.reduce((a, b) => a + b, 0)
+            return state.number += payload;
         },
         reset: (state) => {
             state.result = [];
@@ -26,11 +27,15 @@ export const store = new Vuex.Store ({
         findFibNum: ({ dispatch, commit}, payload) => {
             if (payload < 2){
                 commit('addResult', {payload})
-                return payload
+                return payload;
             }
             else {
                 return dispatch('findFibNum', payload - 1) + dispatch('findFibNum', payload - 2)
-            }  
+            }
+
+          
+            
         }
     },
+  
 })
