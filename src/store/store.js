@@ -3,20 +3,18 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
+  
+
 export const store = new Vuex.Store ({
     state: {
-        number: 8,
-        result: [],
-        userInput: []
+        number: ''
     },
     mutations: {
         addResult: (state, {payload}) => {
-            // state.result.push(payload);
-            // return state.number = state.result.reduce((a, b) => a + b, 0)
-            return state.number += payload;
+            state.number += payload;
         },
         reset: (state) => {
-            state.result = [];
+            state.number = 0;
         }
     },
     actions: {
@@ -26,15 +24,11 @@ export const store = new Vuex.Store ({
         },
         findFibNum: ({ dispatch, commit}, payload) => {
             if (payload < 2){
-                commit('addResult', {payload})
-                return payload;
+                return commit('addResult', {payload})
             }
             else {
                 return dispatch('findFibNum', payload - 1) + dispatch('findFibNum', payload - 2)
-            }
-
-          
-            
+            }  
         }
     },
   

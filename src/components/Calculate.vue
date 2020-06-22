@@ -1,28 +1,28 @@
 <template>
-  <div class="h-100">
-
-
-    <b-container class="text-center h-100">
-        
-        <b-form @submit.prevent="addUserInput" @reset="onReset" class="userInputForm">    
-            <transition name="slide-fade"> 
-                <div v-show="show">
-                   <h2 class="mb-3 label">Find nth of Fibonnaci number</h2>       
-                    <b-form-input
-                        id="input-2"
-                        v-model="number"
-                        required
-                        class="w-25 mx-auto mb-5 shadow"
-                    ></b-form-input>
-                    <b-button type="submit" variant="light" size="lg" class="px-5">Find</b-button>
-                </div> 
-            </transition>            
-        </b-form>  
-    </b-container>
-
-    
-
-  </div>
+    <div class="h-100">
+        <b-container class="text-center h-100"> 
+            <b-form @submit.prevent="addUserInput" @reset="onReset" class="userInputForm">    
+                <transition name="slide-fade"> 
+                    <div v-show="show">
+                        <h2 class="mb-3 label">Find n-th of Fibonnaci number</h2>       
+                        <b-form-input
+                            id="input-2"
+                            type="number"
+                            v-model.number="number"
+                            required
+                            class="w-25 mx-auto mb-5 shadow"
+                            @keyup.enter="addUserInput"
+                        ></b-form-input>
+                        <b-button type="submit" variant="light" size="lg" class="px-5 py-1">
+                            <span v-if="!showLoading">Find</span>
+                            <b-spinner small pr-2 v-if="showLoading"></b-spinner>
+                            <span v-if="showLoading">Finding...</span>
+                        </b-button>
+                    </div> 
+                </transition>            
+            </b-form>  
+        </b-container>
+    </div>
 </template>
 
 <script>
@@ -31,36 +31,72 @@
         return {
             number: '',
             show: false,   
-            visibilityStyle: {
-                visibility: 'hidden'
-            } 
+            showLoading: false
         }
     },
     methods: {
-        onSubmit() {
-          console.log(typeof this.number)
-        },
         onReset(evt) {
             evt.preventDefault()
             // Reset form values
             this.number
         },
-         addUserInput () {
-             console.log(this.show)
-            let userInput = this.number
-            parseInt(userInput)
-            console.log(userInput)
-            this.$store.dispatch('getUserInput', userInput)
-        },
-        vanillaJs: function fib(n) {
-                if (n < 2){
-                return n
+        //filter and pass an user input to store.js, and show the result
+        async addUserInput(){
+            try{
+                if(this.number % 1 === 0 && this.number > 0 && this.number <= 25){
+                    this.loading();
+                    await this.findFibonacci()
+                    await this.success()
+                //this filter is because when userInput is too big, the process gets slow and stuck. 
+                } else if (this.number > 25) {
+                    this.bigNumError();
+                    return;
+                //this will fire when there is decimal or when user enters negative number
+                } else {
+                    this.decimalError();
+                    return;
+                }
+            } catch(err) {
+                console.log(err)
             }
-        return fib(n - 1) + fib (n - 2)
-        }
+        },
+        //This will shift the button to "finding" 
+        loading() {
+            this.showLoading = true;
+        },
+        findFibonacci() {
+            setTimeout(() => {
+                this.$store.dispatch('getUserInput', this.number);
+            }, 500)
+        },
+        success () {        
+            setTimeout(
+            () => {
+                this.showLoading = false;
+                this.$swal.fire({
+                icon: 'success',
+                title: `${this.number}th Fibonacci number is ${this.$store.state.number}`,
+            })
+        }, 1000
+                )
+        },
+        decimalError (){
+                this.$swal.fire({
+                icon: 'error',
+                title: 'Hmm...',
+                text: 'Please enter positive integer!',
+            })
+        },
+        bigNumError (){
+                this.$swal.fire({
+                icon: 'error',
+                title:'Oops..',
+                text: 'The number you put is too big. Please enter a number less than 30!',
+            })
+        },
     },
+    //this triggers animation
     mounted (){
-        // console.log(this.vanillaJs(40))
         this.show = true;
     }
   }
@@ -70,9 +106,7 @@
     .userInputForm {
         transform: translateY(35vh);
     }
-    h2 {
-        font-size: 4vw;
-    }
+
     .slide-fade-enter-active {
         transition: all 0.8s ease-in-out;
         
@@ -82,5 +116,25 @@
         opacity: 0;
         
     }
-   
+    
+    
+    /*
+    ::::::::::::::::::::::::::::::::::::::::::::::::::::
+    Bootstrap 4 breakpoints
+    */
+    /* Small devices (landscape phones, 544px and up) */
+    @media (max-width: 544px) {  
+        h2 {font-size:1.5rem;} /*1rem = 16px*/
+    }
+    
+    /* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
+    @media (min-width: 768px) {  
+        h2 {font-size:2rem;} /*1rem = 16px*/
+    }
+    
+    /* Large devices (desktops, 992px and up) */
+    @media (min-width: 992px) { 
+        h2 {font-size:2.5rem;} /*1rem = 16px*/
+    }
+    
 </style>
