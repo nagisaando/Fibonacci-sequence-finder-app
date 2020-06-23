@@ -8,6 +8,7 @@
                         <b-form-input
                             id="input-2"
                             type="number"
+                            step="0.01"
                             v-model.number="number"
                             required
                             class="w-25 mx-auto mb-5 shadow"
@@ -43,7 +44,7 @@
         //filter and pass an user input to store.js, and show the result
         async addUserInput(){
             try{
-                if(this.number % 1 === 0 && this.number > 0 && this.number <= 25){
+                if(this.number % 1 === 0 && this.number >= 0 && this.number <= 25){
                     this.loading();
                     await this.findFibonacci()
                     await this.success()
@@ -77,21 +78,21 @@
                 icon: 'success',
                 title: `${this.number}th Fibonacci number is ${this.$store.state.number}`,
             })
-        }, 1000
+            }, 1000
                 )
         },
         decimalError (){
                 this.$swal.fire({
                 icon: 'error',
-                title: 'Hmm...',
+                title: 'Negative Number or Decimal Number Is Entered.',
                 text: 'Please enter positive integer!',
             })
         },
         bigNumError (){
                 this.$swal.fire({
                 icon: 'error',
-                title:'Oops..',
-                text: 'The number you put is too big. Please enter a number less than 30!',
+                title:'Entered Number is Too Big.',
+                text: 'Please enter a number less than 25!',
             })
         },
     },
